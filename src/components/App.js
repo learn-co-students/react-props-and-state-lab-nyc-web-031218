@@ -16,6 +16,28 @@ class App extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    return fetch('/api/pets')
+      .then(resp => resp.json())
+      .then(pets => this.setState({pets}))
+  }
+
+  changeFilters = (typeStr) => {
+    if(typeStr !== "all"){
+      this.setState({filters: {type: typeStr}})
+      fetch(`/api/pets?type=${typeStr}`)
+        .then(resp => resp.json())
+        .then(pets => this.setState({pets}))
+    }
+    else{
+      this.setState({filters: {type: typeStr}})
+      fetch('/api/pets')
+        .then(resp => resp.json())
+        .then(pets => this.setState({pets}))
+  }}
+
+
+
   render() {
     return (
       <div className="ui container">
@@ -25,10 +47,10 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters changeFilters={this.changeFilters}/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets}/>
             </div>
           </div>
         </div>
